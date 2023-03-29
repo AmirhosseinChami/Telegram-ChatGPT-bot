@@ -11,7 +11,7 @@ client = TelegramClient(config.session_name_bot, config.API_ID, config.API_HASH)
 keyboard_stop = [[Button.inline("Stop and reset conversation", b"stop")]]
 
 
-# Define helper function to retrieve a message from a conversation and handle button clicks
+#  Define helper function to retrieve a message from a conversation and handle button clicks
 async def send_question_and_retrieve_resault(prompt, conv, keyboard):
     # Send the prompt with the keyboard to the user and store the sent message object
     message = await conv.send_message(prompt, button=keyboard)
