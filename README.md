@@ -47,7 +47,7 @@ The bot will respond to any message it receives by generating a response using t
 
 ## Contributing
 
-If you have any improvements or suggestions for the Enigma Machine simulator, feel free to fork the repository and create a pull request. Any contributions are welcome!
+If you have any improvements or suggestions for the Telegram ChatGPT bot, feel free to fork the repository and create a pull request. Any contributions are welcome!
 
 ## License
 
