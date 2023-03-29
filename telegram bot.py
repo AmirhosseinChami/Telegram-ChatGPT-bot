@@ -1,5 +1,5 @@
 import telethon
-from telethon.tl.custom import button
+from telethon.tl.custom import Button
 from telethon import TelegramClient, events
 import asyncio
 import openai
@@ -8,7 +8,7 @@ import config
 openai.api_key = config.openai_key
 # Configure Telegram client
 client = TelegramClient(config.session_name_bot, config.API_ID, config.API_HASH).start(bot_token=config.BOT_TOKEN)
-keyboard_stop = [[button.inline("Stop and reset conversation", b"stop")]]
+keyboard_stop = [[Button.inline("Stop and reset conversation", b"stop")]]
 
 
 # Define helper function to retrieve a message from a conversation and handle button clicks
