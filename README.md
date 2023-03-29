@@ -44,3 +44,11 @@ python Telegram-ChatGPT-bot.py
 This will start the bot and wait for user queries. Once the bot is running, you can interact with it by sending messages to it in Telegram.
 
 The bot will respond to any message it receives by generating a response using the OpenAI API and sending it back to the user. The bot will continue generating responses until the conversation times out or the user clicks the "Stop and reset conversation" button.
+
+## Contributing
+
+If you have any improvements or suggestions for the Telegram ChatGPT bot, feel free to fork the repository and create a pull request. Any contributions are welcome!
+
+## License
+
+This project is licensed under the Apache License 2.0 - see the LICENSE.md file for details.
