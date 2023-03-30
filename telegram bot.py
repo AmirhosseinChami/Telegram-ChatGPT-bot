@@ -12,9 +12,9 @@ keyboard_stop = [[Button.inline("Stop and reset conversation", b"stop")]]
 
 
 #  Define helper function to retrieve a message from a conversation and handle button clicks
-async def send_question_and_retrieve_resault(prompt, conv, keyboard):
+async def send_question_and_retrieve_result(prompt, conv, keyboard):
     # Send the prompt with the keyboard to the user and store the sent message object
-    message = await conv.send_message(prompt, button=keyboard)
+    message = await conv.send_message(prompt, buttons=keyboard)
 
     # Wait for the user to respond or tap a button using asyncio.wait()
     done, _ = await asyncio.wait({conv.wait_event(events.CallbackQuery()), conv.get_response()}, return_when=asyncio.FIRST_COMPLETED)
@@ -34,9 +34,8 @@ async def send_question_and_retrieve_resault(prompt, conv, keyboard):
 @client.on(events.NewMessage(pattern="(?i)/start"))
 async def handle_start_command(event):
     SENDER = event.sender_id
+    prompt = "Hello! I'm Telegram ChatGPT Bot. Simply ask me anything, and I'll provide you with an answer using chatGPT"
     try:
-        prompt = "Hello! I'm Telegram ChatGPT Bot. Simply ask me anything, and I'll provide you with an answer using chatGPT"
-
         await client.send_message(SENDER, prompt)
         async with client.conversation(await event.get_chat(), exclusive=True, timeout=600) as conv:
             history = []
@@ -44,7 +43,7 @@ async def handle_start_command(event):
             # Keep asking for input and generating responses until the conversation times out or the user clicks the stop button
             while True:
                 prompt = "Please provide your input to chatGPT"
-                user_input = await send_question_and_retrieve_resault(prompt, conv, keyboard_stop)
+                user_input = await send_question_and_retrieve_result(prompt, conv, keyboard_stop)
                 # Check if the user clicked the stop button
                 if user_input is None:
                     prompt = "Recieved. conversation will be reset. Type /start to start a new one"
@@ -57,7 +56,7 @@ async def handle_start_command(event):
 
                     # If the user did not click the stop button, generate a response using OpenAI AP
                     chat_completion = openai.ChatCompletion.create(
-                        model=config.model_engin,
+                        model=config.model_engine,
                         message=history,
                         max_tokens=500,
                         n=1,
@@ -81,5 +80,5 @@ async def handle_start_command(event):
         return
 
 if __name__ == "__main__":
-    print('bot started...')
+    print('Bot started...')
     client.run_until_disconnected()  # Start the bot here
