@@ -6,5 +6,5 @@ API_HASH = ""
 
 BOT_TOKEN = ""
 
-model_engin = "gpt_3.5-turbo"
+model_engine = "gpt_3.5-turbo"
 openai_key = ""
