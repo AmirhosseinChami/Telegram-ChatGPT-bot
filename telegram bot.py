@@ -2,8 +2,9 @@ import telethon
 from telethon.tl.custom import Button
 from telethon import TelegramClient, events
 import asyncio
-import openai
 import config
+import openai
+
 
 openai.api_key = config.openai_key
 # Configure Telegram client
@@ -11,13 +12,14 @@ client = TelegramClient(config.session_name_bot, config.API_ID, config.API_HASH)
 keyboard_stop = [[Button.inline("Stop and reset conversation", b"stop")]]
 
 
-#  Define helper function to retrieve a message from a conversation and handle button clicks
+# Define helper function to retrieve a message from a conversation and handle button clicks
 async def send_question_and_retrieve_result(prompt, conv, keyboard):
     # Send the prompt with the keyboard to the user and store the sent message object
     message = await conv.send_message(prompt, buttons=keyboard)
 
     # Wait for the user to respond or tap a button using asyncio.wait()
-    done, _ = await asyncio.wait({conv.wait_event(events.CallbackQuery()), conv.get_response()}, return_when=asyncio.FIRST_COMPLETED)
+    done, _ = await asyncio.wait({conv.wait_event(events.CallbackQuery()), conv.get_response()},
+                                 return_when=asyncio.FIRST_COMPLETED)
 
     # Retrieve the result of the completed coroutine and delete the sent message
     result = done.pop().result()
@@ -42,25 +44,25 @@ async def handle_start_command(event):
 
             # Keep asking for input and generating responses until the conversation times out or the user clicks the stop button
             while True:
-                prompt = "Please provide your input to chatGPT"
+                prompt = "Please provide your input to Telegram-ChatGPT-Bot"
                 user_input = await send_question_and_retrieve_result(prompt, conv, keyboard_stop)
                 # Check if the user clicked the stop button
                 if user_input is None:
-                    prompt = "Recieved. conversation will be reset. Type /start to start a new one"
+                    prompt = "Received. Conversation will be reset. Type /start to start a new one!"
                     await client.send_message(SENDER, prompt)
                     break
                 else:
-                    prompt = "Recieved! I'm thinking about the response..."
+                    prompt = "Received! I'm thinking about the response..."
                     thinking_message = await client.send_message(SENDER, prompt)
                     history.append({"role": "user", "content": user_input})
 
                     # If the user did not click the stop button, generate a response using OpenAI AP
                     chat_completion = openai.ChatCompletion.create(
-                        model=config.model_engine,
-                        message=history,
+                        model=config.model_engine,  # ID of the model to use.
+                        messages=history,
                         max_tokens=500,
                         n=1,
-                        temperature=0.1  # Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic
+                        temperature=0.1   # Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
                     )
 
                     response = chat_completion.choices[0].message.content
@@ -68,17 +70,23 @@ async def handle_start_command(event):
                     await thinking_message.delete()
                     await client.send_message(SENDER, response, parse_mode='Markdown')
 
+
     except asyncio.TimeoutError:
-        await client.send_message(SENDER, "<b>Conversation ended</b>\nIt's been too long since your last response. please type /start a new one!", parse_mode='html')
+        await client.send_message(SENDER,
+                                  "<b>Conversation ended✔️</b>\nIt's been too long since your last response. Please type /start to begin a new conversation.",
+                                  parse_mode='html')
         return
     except telethon.errors.common.AlreadyInConversationError:
         pass
     except Exception as e:
-        # somthing went wrong
+        # Something went wrong
         print(e)
-        await client.send_message(SENDER, "<b>Conversation ended</b>\nIt's been too long since your last response. please type /start a new one!", parse_mode='html')
+        await client.send_message(SENDER,
+                                  "<b>Conversation ended✔️</b>\nSomething went wrong. Please type /start to begin a new conversation.",
+                                  parse_mode='html')
         return
 
+
 if __name__ == "__main__":
-    print('Bot started...')
-    client.run_until_disconnected()  # Start the bot here
+    print("Bot Started...")
+    client.run_until_disconnected()  # Start the bot!
