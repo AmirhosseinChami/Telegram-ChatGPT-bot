@@ -67,9 +67,8 @@ async def handle_start_command(event):
 
                     response = chat_completion.choices[0].message.content
                     history.append({"role": "assistant", "content": response})
-                    await thinking_message.delete()
+                    await client.delete_messages(SENDER, thinking_message)
                     await client.send_message(SENDER, response, parse_mode='Markdown')
-
 
     except asyncio.TimeoutError:
         await client.send_message(SENDER,
